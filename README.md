@@ -1,5 +1,5 @@
 # ipv4calc
-IPv4 Network Address / Subnet Mask Calculator written by TypeScript
+IPv4 Network Address / Subnet Mask Calculator written in TypeScript
 
 # Demo
 
