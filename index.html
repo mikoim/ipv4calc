@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Eshin Kunishima">
+    <meta name="description" content="IPv4 Network Address / Subnet Mask Calculator">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://ipv4calc.miko.im/">
+    <meta property="og:description" content="IPv4 Network Address / Subnet Mask Calculator">
+    <meta property="og:title" content="IPv4 Calculator">
+    <title>IPv4 Calculator</title>
+    <link rel="icon" href="icon.png">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href=".">IPv4 Calculator</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <h3>IPv4 Network Address / Subnet Mask Calculator</h3>
+        <div class="form-group has-feedback">
+            <label class="control-label" for="ipv4">IPv4 Address</label>
+            <input type="text" class="form-control input-lg" id="ipv4" placeholder="" data-index="0">
+            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Original Address</dt>
+                <dd id="originaladdress"></dd>
+                <dt>Network Address</dt>
+                <dd id="networkaddress"></dd>
+                <dt>Subnet Mask</dt>
+                <dd id="subnetmask"></dd>
+                <dt>Host Range</dt>
+                <dd id="range"></dd>
+                <dt>Broadcast Address</dt>
+                <dd id="broadcast"></dd>
+                <dt>Class</dt>
+                <dd id="class"></dd>
+                <dt>Number of Hosts</dt>
+                <dd id="hosts"></dd>
+                <dt>CIDR</dt>
+                <dd id="cidr"></dd>
+            </dl>
+        </div>
+
+        <div class="col-md-6">
+            <dl class="dl-horizontal">
+                <dt>Original Address</dt>
+                <dd id="originaladdress-binary"></dd>
+                <dt>Network Address</dt>
+                <dd id="networkaddress-binary"></dd>
+                <dt>Subnet Mask</dt>
+                <dd id="subnetmask-binary"></dd>
+                <dt>Host Range</dt>
+                <dd id="range-binary"></dd>
+                <dt>Broadcast Address</dt>
+                <dd id="broadcast-binary"></dd>
+                <dt>Debug Info</dt>
+                <dd id="debug"></dd>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-1.11.2.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/ipv4calc.js"></script>
+<script>
+    var examples = [
+        '192.168.0.1/24',
+        '192.168.0.1 255.255.255.0',
+        '192.168.0.1'
+    ];
+
+    $(function () {
+        var ipv4 = $('#ipv4');
+        var parser = new IPv4();
+
+        ipv4.bind('change keyup', function() {
+            ipv4.parent().removeClass('has-error');
+            $('#debug').text('');
+
+            try {
+                parser.parseText($(this).val());
+
+                $('#originaladdress').text(parser.getOriginalAddress(false));
+                $('#networkaddress').text(parser.getNetworkAddress(false));
+                $('#subnetmask').text(parser.getSubnetMask(false));
+                $('#range').text(parser.getHostsRange(false));
+                $('#broadcast').text(parser.getBroadcastAddress(false));
+
+                $('#originaladdress-binary').text(parser.getOriginalAddress(true));
+                $('#networkaddress-binary').text(parser.getNetworkAddress(true));
+                $('#subnetmask-binary').text(parser.getSubnetMask(true));
+                $('#range-binary').text(parser.getHostsRange(true));
+                $('#broadcast-binary').text(parser.getBroadcastAddress(true));
+
+                $('#class').text(parser.getAddressClass());
+                $('#hosts').text(parser.getHostsCount());
+                $('#cidr').text('/' + parser.getCIDR());
+            } catch (e) {
+                ipv4.parent().addClass('has-error');
+                $('#debug').text(e);
+            }
+        });
+
+        setInterval(function(){
+            var index = parseInt(ipv4.attr('data-index'));
+            ipv4.attr('placeholder', examples[index]);
+            index++;
+            ipv4.attr('data-index', index % examples.length);
+        }, 1000);
+    });
+</script>
+</body>
+</html>
